@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Install Golang
 wget -q https://dl.google.com/go/go1.10.2.linux-armv6l.tar.gz
@@ -7,8 +8,14 @@ rm go1.10.2.linux-armv6l.tar.gz
 echo "export PATH=\$PATH:/usr/local/go/bin" >> .profile
 
 # Install Docker
-curl -sSL get.docker.com | sh && \
-  sudo usermod pi -aG docker
+sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common
+curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
+echo "deb [arch=armhf] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+     $(lsb_release -cs) stable" | \
+     sudo tee /etc/apt/sources.list.d/docker.list
+sudo apt-get update; sudo apt-get install -y docker-ce=18.04.0~ce~3-0~raspbian
+sudo systemctl start docker
+sudo usermod pi -aG docker
 
 # Disable Swap
 sudo dphys-swapfile swapoff && \
