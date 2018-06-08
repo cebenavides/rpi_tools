@@ -2,10 +2,9 @@
 set -e
 
 # Define the type of node being set (the selection could use regexp)
-read -r -p "Is this a Master or Slave node? (s) " node_choice
-case "$node_choice" in
-  m|M ) node_type=master;;
-  s|S ) node_type=slave;;
+case "$1" in
+  m*|M* ) node_type=master;;
+  s*|S* ) node_type=slave;;
   * ) node_type=slave;;
 esac
 
@@ -16,7 +15,7 @@ esac
 # echo "export PATH=\$PATH:/usr/local/go/bin" >> .profile
 
 # Add user to Docker group
-if [[ "$node_type" == "m" ]]; then
+if test "$node_type" = "master"; then
   sudo usermod pirate -aG docker
 else
   echo "Docker should be installed"
@@ -34,6 +33,6 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
   sudo apt-get update -q && \
   sudo apt-get install -qy kubeadm=1.10.2-00 kubectl=1.10.2-00 kubelet=1.10.2-00
 
-if [[ "$node_type" == "m" ]]; then
+if test "$node_type" = "master"; then
   sudo sed -i '/KUBELET_NETWORK_ARGS=/d' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 fi
