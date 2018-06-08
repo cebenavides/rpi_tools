@@ -15,7 +15,7 @@ esac
 # echo "export PATH=\$PATH:/usr/local/go/bin" >> .profile
 
 # Add user to Docker group
-if test "$node_type" = "master"; then
+if command -v docker; then
   sudo usermod pirate -aG docker
 else
   echo "Docker should be installed"

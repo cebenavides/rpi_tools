@@ -17,3 +17,5 @@ static ip_address=$ip/24
 static routers=$dns
 static domain_name_servers=$dns
 EOT
+
+echo "export MY_IP=192.168.0.100" >> .profile
